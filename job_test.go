@@ -724,3 +724,67 @@ func TestTimeFromAtTime(t *testing.T) {
 		})
 	}
 }
+
+func TestRemoveSliceDuplicatesTimeOnSortedSlice(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    []time.Time
+		expected []time.Time
+	}{
+		{
+			name:     "empty slice",
+			input:    []time.Time{},
+			expected: []time.Time{},
+		},
+		{
+			name: "only one",
+			input: []time.Time{
+				time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+			},
+			expected: []time.Time{
+				time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+			},
+		},
+		{
+			name: "no duplicates",
+			input: []time.Time{
+				time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+				time.Date(2023, 1, 2, 0, 0, 0, 0, time.UTC),
+			},
+			expected: []time.Time{
+				time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+				time.Date(2023, 1, 2, 0, 0, 0, 0, time.UTC),
+			},
+		},
+		{
+			name: "with duplicates",
+			input: []time.Time{
+				time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+				time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+				time.Date(2023, 1, 2, 0, 0, 0, 0, time.UTC),
+			},
+			expected: []time.Time{
+				time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+				time.Date(2023, 1, 2, 0, 0, 0, 0, time.UTC),
+			},
+		},
+		{
+			name: "all duplicates",
+			input: []time.Time{
+				time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+				time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+				time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+			},
+			expected: []time.Time{
+				time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := removeSliceDuplicatesTimeOnSortedSlice(tt.input)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}

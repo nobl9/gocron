@@ -493,13 +493,17 @@ func (o oneTimeJobDefinition) setup(j *internalJob, _ *time.Location, now time.T
 }
 
 func removeSliceDuplicatesTimeOnSortedSlice(times []time.Time) []time.Time {
-	ret := make([]time.Time, 0, len(times))
-	for i, t := range times {
-		if i == 0 || t != times[i-1] {
-			ret = append(ret, t)
+	if len(times) == 0 {
+		return times
+	}
+	j := 0
+	for i := 1; i < len(times); i++ {
+		if times[i] != times[j] {
+			j++
+			times[j] = times[i]
 		}
 	}
-	return ret
+	return times[:j+1]
 }
 
 // OneTimeJobStartAtOption defines when the one time job is run
