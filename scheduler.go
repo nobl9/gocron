@@ -47,6 +47,8 @@ type Scheduler interface {
 	// JobsWaitingInQueue number of jobs waiting in Queue in case of LimitModeWait
 	// In case of LimitModeReschedule or no limit it will be always zero
 	JobsWaitingInQueue() int
+	// IsStarted returns true if the scheduler has been started
+	IsStarted() bool
 }
 
 // -----------------------------------------------
@@ -777,6 +779,10 @@ func (s *scheduler) JobsWaitingInQueue() int {
 		return len(s.exec.limitMode.in)
 	}
 	return 0
+}
+
+func (s *scheduler) IsStarted() bool {
+	return s.started
 }
 
 // -----------------------------------------------
